@@ -1,4 +1,5 @@
-#YouTube Playlist Downloader
+YouTube Playlist Downloader
+======
 
 **Requirements:** Python 3.x/2.x, pafy, bs4, youtube-dl, lxml
 
@@ -6,14 +7,16 @@
 pip install pafy bs4 youtube-dl lxml
 ```
 
-###Instructions for Windows
+Instructions for Windows
+------
 1. Extract the `yt_downloader for Windows` folder by downloading the ZIP using the green-coloured 'Clone or download' button on the top right.
 2. Run the `yt_downloader_2_x.exe` file.
 3. Type in the playlist ID and press Enter.
 4. All the tracks will be downloaded to the "Downloaded Music" folder.
 5. Enjoy your piracy.
 
-###Instructions for Python (all OS)
+Instructions for Python (all OS)
+------
 1. Edit the `yt_downloader.py` file with the playlist URL and folder location of your desire.
 2. Run the file.
 3. Rejoice in your piracy.
@@ -22,4 +25,4 @@ The file format is .m4a which should work seamlessly with iTunes. Currently ther
 
 I recommend using [EasyTAG](https://wiki.gnome.org/Apps/EasyTAG) to add ID3 tags to your files.
 
-*Note:* Use the `yt_downloader_2_x.py` file if you are running Python 2.x. For Python 3.x, use `yt_downloader.py`.
+**Note:** Use the `yt_downloader_2_x.py` file if you are running Python 2.x. For Python 3.x, use `yt_downloader.py`.
