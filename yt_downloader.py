@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 '''
 YouTube Playlist Downloader
-Gurjot Sidhu, 2017
+Gurjot Sidhu, July 2017
 MIT License
 
-Requirements: Python 3.x, pafy, bs4, youtube-dl
+Requirements: Python 3.x, pafy, youtube-dl, bs4, lxml
 
 Provide the URL for a YouTube playlist and the script will download all the
 songs in the playlist (up to 100; will add a fix soon) to your local drive.
@@ -16,8 +16,6 @@ I recommend using EasyTAG to add ID3 tags to your files.
 
 import pafy
 from bs4 import BeautifulSoup as bs
-#from urllib2 import urlopen
-#from __future__ import print_function
 from urllib.request import urlopen
 
 #==============================================================================
@@ -49,4 +47,4 @@ for i in range(len(ids)):
     video_url = str("https://www.youtube.com/watch?v="+ids[i])
     video = pafy.new(video_url)
     audio = video.getbestaudio(preftype="m4a")
-    audio.download(FOLDER_LOCATION)
+    audio.download()
