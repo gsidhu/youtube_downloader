@@ -1,6 +1,12 @@
 YouTube Playlist Downloader
 ======
 
+**Features:** 
+* Works for standard YouTube playlists
+* [DONE] Works for YouTube Mix playlists
+* [DONE] Checks if video is unavailable or if file already exists in the downloads directory
+* [TODO] ???
+
 **Requirements:** Python 3.x/2.x, pafy, bs4, youtube-dl, lxml
 
 ```
