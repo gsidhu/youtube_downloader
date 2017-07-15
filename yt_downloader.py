@@ -105,7 +105,10 @@ def get_m4a(title, video_id):
     # Fetch audio
     audio = video.getbestaudio(preftype="m4a")
     FILE_LOCATION = str(FOLDER_LOCATION + title + ".m4a")
-    audio.download(FILE_LOCATION)
+    try:
+        audio.download(FILE_LOCATION)
+    except:
+        print("Looks like there's a problem. Skipping it.\n")
 
 def get_mp3(title, video_id):
     video_url = str("https://www.youtube.com/watch?v="+video_id)
