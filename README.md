@@ -2,14 +2,9 @@ YouTube Playlist Downloader
 ======
 
 **Features:**
+* Runs on Windows with no dependencies
 * Works for ALL types of YouTube playlists (standard, Mix, Liked etc.)
 * Super quiet, almost no error reporting
-
-**Requirements:** Python 2.x, pafy, youtube-dl, ffmpeg
-
-```
-pip install pafy youtube-dl ffmpeg
-```
 
 Instructions for Windows
 ------
@@ -22,6 +17,12 @@ Instructions for Windows
 
 Instructions for Python (all OS)
 ------
+**Requirements:** Python 2.x, pafy, youtube-dl, ffmpeg
+
+```
+pip install pafy youtube-dl ffmpeg
+```
+
 1. Edit the `yt_downloader.py` file with the playlist URL and folder location of your desire.
 2. Change the `FORMAT_MP3' variable to 1 if you want the files to be in '.mp3' format.
 3. Run the script.
