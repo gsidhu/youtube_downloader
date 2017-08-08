@@ -28,17 +28,22 @@ from string import punctuation
 #==============================================================================
 #PLAYLIST_URL = "https://www.youtube.com/playlist?list=PL2140A0411C65DD13"
 #PLAYLIST_URL = "https://www.youtube.com/watch?v=h1QTZCvChpk&list=PLxKHVMqMZqUQknyKcYbQaRfXvZXPR5VJ2&index=7"
-PLAYLIST_URL = "https://www.youtube.com/watch?v=tBwoRviPvVw&list=PLFgquLnL59alW3xmYiWRaoz0oM3H17Lth"
+#PLAYLIST_URL = "https://www.youtube.com/watch?v=IQayRoXJ_CI&list=PL-9AI1-of8cuG_8ikAvNMfIDWtCQleEBB"
+PLAYLIST_URL = raw_input("Enter playlist URL: ")
 
 #==============================================================================
 # ENTER THE LOCATION FOR WHERE YOU WANT THE DOWNLOADED FILES TO BE PLACED
 #==============================================================================
-FOLDER_LOCATION = "/home/gurjot/Music/"
-
+#FOLDER_LOCATION = "/home/gurjot/Music/Mellow Beats/"
+directory = raw_input("Enter folder name for this playlist: ")
+FOLDER_LOCATION = str("/home/gurjot/Music/" + str(directory) + "/")
+if not os.path.exists(FOLDER_LOCATION):
+    os.makedirs(FOLDER_LOCATION)
 #==============================================================================
 # If you want an MP3 file change the 0 below to 1 (default format is .m4a)
 #==============================================================================
-FORMAT_MP3 = 0
+FORMAT_MP3 = 1
+HOW_MANY_TRACKS = raw_input("How many tracks to download? Leave empty if all: ")
 
 #==============================================================================
 # IGNORE EVERYTHING FOLLOWING THIS
@@ -133,7 +138,10 @@ def get_mp3(title, video_id):
 #==============================================================================
 # Download the shit
 #==============================================================================
-for i in range(len(ids)):
+if HOW_MANY_TRACKS == "":
+    HOW_MANY_TRACKS = len(ids)
+
+for i in range(HOW_MANY_TRACKS):
     replacement_title = get_filename(titles[i])
     print(str("Now downloading: "+replacement_title))
 
