@@ -1,0 +1,23 @@
+Implement a feature that divides a compilation video into individual audio tracks.
+
+How To? Use pydub.
+
+#pydub works in milliseconds so 1 second of audio is [:1000]
+
+from pydub import AudioSegment
+from pydub.silence import split_on_silence
+
+video_file = AudioSegment.from_mp3(path_to_file) # or from_file()
+audio_chunks = split_on_silence(video_file, min_silence_len=500, silence_thresh=-40)
+
+Algorithm:
+First normalize the audio file and store it in temp storage.
+Check the decibel level of the first 1 or 0.5 seconds.
+Run split_on_silence for everything below that threshold.
+
+Algorithm 2:
+Run a greedy loop that checks the dB level of the first half second and then processes the audio in 10 second chunks, stopping when it hits that same dB level again. This should roughly be the length of our first song. Loop this entire process till all songs are covered.
+Should normalize the audio for better results.
+
+
+youtube-dl -i --quiet --extract-audio --audio-format mp3 -o "/home/gurjot/youtube_downloader/Downloaded Music/%(title)s.%(ext)s" VIDEO_ID

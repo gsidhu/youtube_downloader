@@ -22,39 +22,8 @@ import re
 import subprocess
 import youtube_dl
 from string import punctuation
-
-#==============================================================================
-# ENTER THE URL FOR THE PLAYLIST HERE
-#==============================================================================
-#PLAYLIST_URL = "https://www.youtube.com/playlist?list=PL2140A0411C65DD13"
-#PLAYLIST_URL = "https://www.youtube.com/watch?v=h1QTZCvChpk&list=PLxKHVMqMZqUQknyKcYbQaRfXvZXPR5VJ2&index=7"
-#PLAYLIST_URL = "https://www.youtube.com/watch?v=IQayRoXJ_CI&list=PL-9AI1-of8cuG_8ikAvNMfIDWtCQleEBB"
-PLAYLIST_URL = raw_input("Enter playlist URL: ")
-
-#==============================================================================
-# ENTER THE LOCATION FOR WHERE YOU WANT THE DOWNLOADED FILES TO BE PLACED
-#==============================================================================
-#FOLDER_LOCATION = "/home/gurjot/Music/Mellow Beats/"
-directory = raw_input("Enter folder name for this playlist: ")
-FOLDER_LOCATION = str("/home/gurjot/Music/" + str(directory) + "/")
-if not os.path.exists(FOLDER_LOCATION):
-    os.makedirs(FOLDER_LOCATION)
-#==============================================================================
-# If you want an MP3 file change the 0 below to 1 (default format is .m4a)
-#==============================================================================
-FORMAT_MP3 = 1
-HOW_MANY_TRACKS = raw_input("How many tracks to download? Leave empty if all: ")
-
-#==============================================================================
-# IGNORE EVERYTHING FOLLOWING THIS
-#==============================================================================
-playlist_json = pafy.get_playlist(PLAYLIST_URL)
-titles = []
-ids = []
-
-for item in range(len(playlist_json['items'])):
-    titles.append(playlist_json['items'][item]['playlist_meta']['title'].encode('ascii','ignore'))
-    ids.append(playlist_json['items'][item]['playlist_meta']['encrypted_id'].encode('ascii','ignore'))
+from bs4 import BeautifulSoup as bs
+from urllib import urlopen
 
 class MyLogger(object):
     def debug(self, msg):
@@ -73,11 +42,18 @@ def get_filename(input_title):
     elif isinstance(input_title,str):
         replacement_title = input_title
     # Remove brackets and contents
-    replacement_title = re.sub(re.compile(r'\([^()]*\)'), '', replacement_title)
-    replacement_title = re.sub(re.compile(r'\[^]*\)'), '', replacement_title)
+    #replacement_title = re.sub(re.compile(r'\([^()]*\)'), '', replacement_title)
+    #replacement_title = re.sub(re.compile(r'\[^]*\)'), '', replacement_title)
+    replacement_title = re.sub(r'\[.+.*\]\s*', '', replacement_title)
     # Remove trailing and multiple spaces
     replacement_title = re.sub(re.compile(r'\s+$'), '', replacement_title)
-    replacement_title = re.sub(re.compile(r'\s\s+'), '', replacement_title)
+    #replacement_title = re.sub(re.compile(r'\s\s+'), '', replacement_title)
+    replacement_title = replacement_title.split(' ')
+    try:
+        replacement_title.remove(u'')
+    except ValueError:
+        pass
+    replacement_title = ' '.join(replacement_title)
     # Remove punctuation except dashes
     replacement_title = re.sub(re.compile(r'\p{P}(?<!-)'), '', replacement_title)
     replacement_title = re.sub(re.compile(r'\|'), '', replacement_title)
@@ -134,6 +110,71 @@ def get_mp3(title, video_id):
             ydl.download([video_url])
     except:
         subprocess.call(str('''youtube-dl -i --quiet --extract-audio --audio-format mp3 -o "''' + FOLDER_LOCATION + title + '.%(ext)s" ' + video_url), shell=True)
+
+def fallback_fetch():
+    #playlist_url = urlopen(PLAYLIST_URL)
+    #content = playlist_url.read()
+    f = open('/home/gurjot/youtube_downloader/savedpage.txt')
+    content = f.read()
+    soup = bs(content,"lxml")
+    titles = []
+    ids = []
+    
+    sources = soup.find_all('tr',{"data-title":True})
+    for source in sources:
+        titles.append(source['data-title'])
+        ids.append(source['data-video-id'])
+    
+    if len(titles) == 0:
+        raise ValueError("Fallback fetch failed.")
+    
+    f.close()
+    return titles, ids
+
+#==============================================================================
+# ENTER THE URL FOR THE PLAYLIST HERE
+#==============================================================================
+#PLAYLIST_URL = "https://www.youtube.com/playlist?list=PL2140A0411C65DD13"
+#PLAYLIST_URL = "https://www.youtube.com/watch?v=h1QTZCvChpk&list=PLxKHVMqMZqUQknyKcYbQaRfXvZXPR5VJ2&index=7"
+#PLAYLIST_URL = "https://www.youtube.com/watch?v=IQayRoXJ_CI&list=PL-9AI1-of8cuG_8ikAvNMfIDWtCQleEBB"
+PLAYLIST_URL = raw_input("Enter playlist URL: ")
+
+#==============================================================================
+# ENTER THE LOCATION FOR WHERE YOU WANT THE DOWNLOADED FILES TO BE PLACED
+#==============================================================================
+#FOLDER_LOCATION = "/home/gurjot/Music/Mellow Beats/"
+directory = raw_input("Enter folder name for this playlist: ")
+FOLDER_LOCATION = str("/home/gurjot/Music/" + str(directory) + "/")
+if not os.path.exists(FOLDER_LOCATION):
+    os.makedirs(FOLDER_LOCATION)
+#==============================================================================
+# If you want an MP3 file change the 0 below to 1 (default format is .m4a)
+#==============================================================================
+FORMAT_MP3 = 1
+HOW_MANY_TRACKS = raw_input("How many tracks to download? Leave empty if all: ")
+
+#==============================================================================
+# IGNORE EVERYTHING FOLLOWING THIS
+#==============================================================================
+try:
+    try:    
+        playlist_json = pafy.get_playlist(PLAYLIST_URL)
+        skip = 0
+    except:
+        titles, ids = fallback_fetch()
+        skip = 1
+except:
+    track = pafy.new(PLAYLIST_URL)
+    titles = [get_filename(track.title)]
+    ids = [track.videoid]
+    skip = 1
+
+if not skip:
+    titles = []
+    ids = []
+    for item in range(len(playlist_json['items'])):
+        titles.append(playlist_json['items'][item]['playlist_meta']['title'].encode('ascii','ignore'))
+        ids.append(playlist_json['items'][item]['playlist_meta']['encrypted_id'].encode('ascii','ignore'))
 
 #==============================================================================
 # Download the shit
